@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Завари чай</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Метатег для адаптации под мобильные устройства -->
+<style>
+    body {
+        background-color: lavender;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        height: 100vh; /* Высота экрана */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .tea-text {
+        font-size: 5vw; /* Адаптивный размер текста */
+        color: black;
+    }
+    .tea-cup {
+        width: 30vw; /* Адаптивный размер чашки */
+        height: 25vw;
+        background-color: #FFC0CB; /* Розовый цвет чашки */
+        border-radius: 0 0 50% 50%;
+        position: relative;
+    }
+    .handle {
+        width: 12vw;
+        height: 12vw;
+        background-color: #FFC0CB; /* Розовый цвет ручки */
+        border-radius: 50%;
+        position: absolute;
+        right: -6vw;
+        top: 6vw;
+    }
+    .water {
+        width: 90%;
+        height: 50%;
+        background-color: white;
+        border-radius: 0 0 50% 50%;
+        position: absolute;
+        top: 20%;
+        left: 5%;
+        transition: background-color 6s linear;
+    }
+    .brew-button {
+        margin: 20px auto;
+        padding: 5vw 10vw;
+        background-color: pink;
+        border: none;
+        border-radius: 20px;
+        font-size: 5vw; /* Адаптивный размер текста */
+        color: white;
+        cursor: pointer;
+        user-select: none; /* Предотвращает выделение текста */
+    }
+    .timer {
+        font-size: 5vw;
+    }
+    .final-message {
+        font-size: 4vw; /* Адаптивный размер текста */
+        color: black;
+        visibility: hidden;
+    }
+</style>
+</head>
+<body>
+<div class="tea-text">Завари чай, удерживай пакетик!</div>
+<div class="tea-cup">
+    <div class="handle"></div>
+    <div class="water"></div>
+</div>
+<div>Заварить чай</div> <!-- Текст выше кнопки -->
+<button class="brew-button" onmousedown="startBrewing()" onmouseup="pauseBrewing()" ontouchstart="startBrewing()" ontouchend="pauseBrewing()">
+</button>
+<div class="timer">00:06</div>
+<div class="final-message">Хорошей дороги, красотка!</div>
+
+<script>
+    let timeoutId, intervalId, startTime;
+    let remainingTime = 6000;
+
+    function updateTimer() {
+        const timer = document.querySelector('.timer');
+        let seconds = Math.ceil(remainingTime / 1000);
+        timer.innerHTML = `00:0${seconds}`;
+    }
+
+    function startBrewing() {
+        if (!startTime) {
+            startTime = Date.now();
+            const water = document.querySelector('.water');
+            water.style.backgroundColor = 'brown'; // Начало изменения цвета
+            water.style.transition = `background-color ${remainingTime}ms linear`;
+        }
+
+        intervalId = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            remainingTime = Math.max(6000 - elapsed, 0);
+            updateTimer();
+            if (remainingTime <= 0) {
+                clearInterval(intervalId);
+                showMessage();
+            }
+        }, 1000);
+    }
+
+    function pauseBrewing() {
+        clearInterval(intervalId);
+        const elapsed = Date.now() - startTime;
+        remainingTime = Math.max(6000 - elapsed, 0);
+        updateTimer();
+        startTime = null;  // Остановка таймера без сброса цвета
+    }
+
+    function showMessage() {
+        const message = document.querySelector('.final-message');
+        message.style.visibility = 'visible';
+    }
+</script>
+</body>
+</html>
